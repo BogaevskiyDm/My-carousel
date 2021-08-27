@@ -3,16 +3,24 @@ class Carousel {
         this.container = document.querySelector(containerID);
         this.slides = this.container.querySelectorAll(slide);
         this.interval = interval;
-    }
-
-    _initProps() {
         this.slidesCount = this.slides.length;
+    }
+    _initProps() {
         this.LEFT_ARROW = 'ArrowLeft';
         this.RIGHT_ARROW = 'ArrowRight';
         this.SPACE = ' ';
         this.currentSlide = 0;
         this.isPlaing = true;
         this.timerId;
+    }
+
+
+    gotoSlide(n) {
+        this.slides[this.currentSlide].classList.toggle('active');
+        this.indItem[this.currentSlide].classList.toggle('active');
+        this.currentSlide = (n + this.slidesCount) % this.slidesCount;
+        this.slides[this.currentSlide].classList.toggle('active');
+        this.indItem[this.currentSlide].classList.toggle('active');
     }
 
     _initControls() {
@@ -48,21 +56,14 @@ class Carousel {
         this.indContainer = this.container.querySelector('.indicators');
         this.indItem = this.container.querySelectorAll('.indicator');
     }
+
     _initListener() {
         this.pauseBtn.addEventListener('click', this.pausePlay.bind(this));
         this.prevBtn.addEventListener('click', this.prev.bind(this));
         this.nextBtn.addEventListener('click', this.next.bind(this));
         this.indContainer.addEventListener('click', this.indicate.bind(this));
-        document.addEventListener('kFeydown', this.pressKey.bind(this));
-    }
+        document.addEventListener('keydown', this.pressKey.bind(this));
 
-
-    gotoSlide(n) {
-        this.slides[this.currentSlide].classList.toggle('active');
-        this.indItem[this.currentSlide].classList.toggle('active');
-        this.currentSlide = (n + this.slidesCount) % this.slidesCount;
-        this.slides[this.currentSlide].classList.toggle('active');
-        this.indItem[this.currentSlide].classList.toggle('active');
     }
 
     nextSlide() {
@@ -101,16 +102,16 @@ class Carousel {
         this.isPlaing = !this.isPlaing;
         this.pauseBtn.innerHTML = 'PAUSE';
     }
+
     indicate(e) {
         let target = e.target;
         const index = target.dataset.slideTo;
 
 
         if (target && target.classList.contains('indicator')) {
-            this.gotoSlide(+target.dataset.slideTo);
+            this.gotoSlide(+index);
             this.pause();
         }
-
     }
 
     pressKey(e) {
@@ -120,13 +121,15 @@ class Carousel {
     }
 
     init() {
-        this._initProps();
-        this._initControls();
         this._initIndicators();
+        this._initControls();
+        this._initProps();
         this._initListener();
         this.timerId = setInterval(() => this.nextSlide(), this.interval);
     }
-}
+};
+  
+
 
 
 // function Carousel(containerID = '#carousel', slide = '.slide', interval = 1500) {
